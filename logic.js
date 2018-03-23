@@ -53,6 +53,13 @@ function House(position) {
 	this.contains_point = function(point) {
 		return (this.position.distance2(point) < this.radius ** 2)
 	}
+	this.too_close = function(point) {
+		return (this.position.distance2(point) < (this.radius * 2.2) ** 2)
+	}
+	this.has_clear_path = function(house) {
+		//todo vector math to determine clear path
+		return true
+	}
 	return this
 }
 
@@ -60,7 +67,7 @@ function place_a_house(e, view) {
 	position = view.get_canvas_position_from_event(e)
 	overlaps = false
 	houses.forEach((h) => {
-		if (h.contains_point(position)) {
+		if (h.too_close(position)) {
 			overlaps = true
 		}
 	})
@@ -87,8 +94,8 @@ function place_a_road(e, view) {
 		}
 	})
 	if (house != null) {
-		if (road_start != null) {
-			create_road(house, road_start)
+		if (road_start != null && road_start.has_clear_path(house)) {
+			create_road(road_start, house)
 			road_start.picked = false
 			road_start = null
 		} else {
@@ -119,7 +126,7 @@ function remove_a_gremlin(e, view) {
 			waiting_for_autoduplicate = false
 		}, 500)
 	}
-	if (modified || autoduplicate) {
+	if (modified) {
 		update_render(view)
 	}
 }
