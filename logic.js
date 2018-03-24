@@ -57,7 +57,19 @@ function House(position) {
 		return (this.position.distance2(point) < (this.radius * 2.2) ** 2)
 	}
 	this.has_clear_path = function(house) {
-		//todo vector math to determine clear path
+		// clear = true
+		// p1 = this.position
+		// p2 = house.position
+		// unit = p1.minus(p2).normalize()
+		// perpendicular = unit.perpendicular()
+		// houses.forEach((h) => {
+		// 	if (h != this && h != house) {
+		// 		distance_to_road = Math.abs(h.position.minus(p1).dot(perpendicular))
+		// 		clear = clear && (distance_to_road > h.radius)
+		// 	}
+		// })
+		// return clear
+
 		return true
 	}
 	return this
@@ -78,6 +90,21 @@ function place_a_house(e, view) {
 	}
 }
 
+function remove_a_house(e, view) {
+	position = view.get_canvas_position_from_event(e)
+	houses.forEach((h) => {
+		if (h.contains_point(position)) {
+			h.neighbors.forEach((n) => {
+				// remove h from its neighbors
+				n.neighbors.splice(n.neighbors.indexOf(h), 1)
+			})
+			// remove h from houses
+			houses.splice(houses.indexOf(h), 1)
+		}
+	})
+	update_render(view)
+}
+
 function create_road(house1, house2) {
 	if (house1 != house2) {
 		house1.neighbors.push(house2)
@@ -94,10 +121,12 @@ function place_a_road(e, view) {
 		}
 	})
 	if (house != null) {
-		if (road_start != null && road_start.has_clear_path(house)) {
-			create_road(road_start, house)
-			road_start.picked = false
-			road_start = null
+		if (road_start != null) {
+			if (road_start.has_clear_path(house)) {
+				create_road(road_start, house)
+				road_start.picked = false
+				road_start = null
+			}
 		} else {
 			road_start = house
 			house.picked = true
@@ -145,11 +174,13 @@ place_houses = new Mode("Place Houses", place_a_house)
 place_roads = new Mode("Place Roads", place_a_road)
 remove_gremlins = new Mode("Remove Gremlins", remove_a_gremlin)
 place_gremlins = new Mode("Place Gremlins", place_a_gremlin)
+remove_houses = new Mode("Remove Houses", remove_a_house)
 
 modes.push(place_houses)
 modes.push(place_roads)
 modes.push(place_gremlins)
 modes.push(remove_gremlins)
+modes.push(remove_houses)
 
 
 // autoduplicate = new Toggle("autoduplicate", true)
@@ -299,6 +330,19 @@ function Point2D(x, y) {
 	this.y = y
 	this.distance2 = function(other) {
 		return (this.x - other.x) ** 2 + (this.y - other.y) ** 2
+	}
+	this.minus = function(other) {
+		return new Point2D(this.x - other.x, this.y - other.y)
+	}
+	this.normalize = function() {
+		magnitude = Math.sqrt(this.x ** 2 + this.y ** 2)
+		return new Point2D(this.x / magnitude, this.y / magnitude)
+	}
+	this.perpendicular = function() {
+		return new Point2D(this.y, -this.x)
+	}
+	this.dot = function(other) {
+		return this.x * other.x + this.y * other.y
 	}
 	return this
 }
