@@ -178,9 +178,9 @@ remove_houses = new Mode("Remove Houses", remove_a_house)
 
 modes.push(place_houses)
 modes.push(place_roads)
+modes.push(remove_houses)
 modes.push(place_gremlins)
 modes.push(remove_gremlins)
-modes.push(remove_houses)
 
 
 // autoduplicate = new Toggle("autoduplicate", true)
