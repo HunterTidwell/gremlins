@@ -2,10 +2,10 @@
 Exploration of the gremlins puzzle on arbitrary graphs
 
 The puzzle goes like this.
-5 houses on a straight road. One house has a gremlen; you don't know which.
+5 houses on a straight road. One house contains a gremlin; you don't know which.
 Each day, you can check one house and you are guaranteed to find the gremlin if he's there.
-Each night, the gremlin must move to an adjacent house to where it was that day.
-Can you find the gremlin? Can you do it in 6 days?
+Each night, the gremlin must move to an adjacent house.
+Can you find the gremlin? ...Can you do it in 6 days?
 
 The more general puzzle, which you can explore here, is on an arbitrary graph of house connections.
 Build a graph by first placing houses in "place houses" mode.
